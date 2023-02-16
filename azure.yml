@@ -1,0 +1,23 @@
+--- 
+pool: 'newnop'
+trigger: 
+  - master
+  - main 
+jobs:
+  - job: nop1
+    displayName: nop1
+    steps: 
+      - script: sudo mkdir /var/www/nopCommerce
+      - script: cd /var/www/nopCommerce
+        displayName: building_nop
+      - script: https://github.com/nopSolutions/nopCommerce/releases/download/release-4.50.3/nopCommerce_4.50.3_NoSource_linux_x64.zip  
+      - script: cd /var/www/nopCommerce  
+      - script: sudo apt-get install unzip -y 
+      - script: sudo unzip /var/www/nopCommerce/varnopCommerce_4.60.2_NoSource_linux_x64.zip
+      - script: sudo mkdir bin
+      - script: sudo mkdir logs
+      - script: cd ..
+      - script: sudo chgrp -R www-data nopCommerce/
+      - script: sudo chown -R www-data nopCommerce/
+      - script: sudo systemctl start nopCommerce.service
+      
