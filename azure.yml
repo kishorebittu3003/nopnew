@@ -1,23 +1,63 @@
 --- 
 pool: 'newnop'
 trigger: 
-  - master
   - main 
 jobs:
   - job: nop1
     displayName: nop1
     steps: 
-      - script: sudo mkdir /var/www/nopCommerce
-      - script: cd /var/www/nopCommerce
-        displayName: building_nop
-      - script: https://github.com/nopSolutions/nopCommerce/releases/download/release-4.50.3/nopCommerce_4.50.3_NoSource_linux_x64.zip  
-      - script: cd /var/www/nopCommerce  
-      - script: sudo apt-get install unzip -y 
-      - script: sudo unzip /var/www/nopCommerce/varnopCommerce_4.60.2_NoSource_linux_x64.zip
-      - script: sudo mkdir bin
-      - script: sudo mkdir logs
-      - script: cd ..
-      - script: sudo chgrp -R www-data nopCommerce/
-      - script: sudo chown -R www-data nopCommerce/
-      - script: sudo systemctl start nopCommerce.service
-      
+     - task: Bash@3
+       inputs:
+         targetType: 'inline'
+         script: sudo apt update 
+     - task: Bash@3
+       inputs:
+         targetType: 'inline'
+         script: sudo mkdir /var/www/nopCommerce   
+     - task: Bash@3
+       inputs:
+         targetType: 'inline'
+         script:  cd /var/www/nopCommerce 
+       displayName: building_nop
+     - task: Bash@3
+       inputs:
+         targetType: 'inline'
+         script: wget https://github.com/nopSolutions/nopCommerce/releases/download/release-4.50.3/nopCommerce_4.50.3_NoSource_linux_x64.zip 
+       displayName: takingzipfile
+     - task: Bash@3 
+       inputs:
+         targetType: 'inline'
+         script: sudo apt install unzip -y
+     - task: Bash@3
+       inputs:
+         targetType: 'inline'
+         script: sudo unzip nopCommerce_4.50.3_NoSource_linux_x64.zip
+     - task: Bash@3
+       inputs:
+         targetType: 'inline'
+         script: sudo mkdir bin     
+     - task: Bash@3
+       inputs:
+         targetType: 'inline'
+         script: sudo mkdir logs           
+ 
+     - task: Bash@3
+       inputs:
+         targetType: 'inline'
+         script: cd ..
+     - task: Bash@3
+       inputs:
+         targetType: 'inline'
+         script: sudo chgrp -R www-data /var/www/nopCommerce/
+     - task: Bash@3
+       inputs:
+         targetType: 'inline'
+         script: sudo chown -R www-data /var/www/nopCommerce/
+     - task: Bash@3
+       inputs:
+         targetType: 'inline'
+         script: sudo systemctl daemon-reload    
+     - task: Bash@3
+       inputs:
+         targetType: 'inline'
+         script: sudo systemctl start nopCommerce.service
